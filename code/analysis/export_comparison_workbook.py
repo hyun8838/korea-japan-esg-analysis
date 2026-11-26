@@ -16,7 +16,7 @@ from common import io_common as io
 OUT = cfg.OUTPUT_DIR
 REPORT_PATH = OUT / "한일_비교결과.xlsx"
 
-# I. 분석방법 비교
+# 분석방법 비교
 PREPROCESSING_COMPARISON = pd.DataFrame([
     {"항목": "키워드 추출", "한국": "사전 기반 span 매칭", "일본": "사전 기반 span 매칭", "비고": "겹치는 표현은 longest-match 채택"},
     {"항목": "문장 분리", "한국": "kss(미설치·오류 시 정규식)", "일본": "[。！？\\n]+ 기준 정규식", "비고": "-"},
@@ -189,33 +189,33 @@ def build():
         build_scope_funnel_table().to_excel(writer, sheet_name="I_문서구성_퍼널", index=False)
         build_aggregation_criteria_table().to_excel(writer, sheet_name="I_집계기준", index=False)
 
-        # II-1 ESG 범주별 개요
+        # ESG 범주별 개요
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"1_ESG범주별_개요_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II1_ESG범주개요_{lang}", index=False)
 
-        # II-2 학문분야별 밀도
+        # 학문분야별 밀도
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"2_학문분야별_밀도_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II2_학문분야별밀도_{lang}", index=False)
 
-        # II-3 히트맵
+        # 히트맵
         for lang in ("kr", "jp"):
             path = OUT / lang / "단계2_빈도분석" / f"3_히트맵_{lang}.csv"
             if path.exists():
                 pd.read_csv(path, index_col=0).to_excel(writer, sheet_name=f"II3_히트맵_{lang}")
 
-        # II-4 대학별 개요
+        # 대학별 개요
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"4_대학별_개요_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II4_대학별개요_{lang}", index=False)
 
-        # II-5 페이지타입별 개요
+        # 페이지타입별 개요
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"5_페이지타입별_개요_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II5_페이지타입별개요_{lang}", index=False)
 
-        # II-6 연관분석 (top50 등장횟수 + top50 ochiai)
+        # 연관분석 (top50 등장횟수 + top50 ochiai)
         for lang in ("kr", "jp"):
             path = OUT / lang / "단계3_연관분석" / f"concept_edges_{lang}.csv"
             edges = _read_csv(path)
@@ -225,63 +225,63 @@ def build():
                 edges.sort_values("ochiai", ascending=False).head(50).to_excel(
                     writer, sheet_name=f"II6_연관_Ochiai_{lang}", index=False)
 
-        # II-9 국가×계열×page_type 3중 교차표
+        # 국가×계열×page_type 3중 교차표
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"A_3중교차표_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II9_3중교차표_{lang}", index=False)
 
-        # II-10 ESG 하위범주(E/S/G)별 밀도
+        # ESG 하위범주(E/S/G)별 밀도
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"C_ESG하위범주별_밀도_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II10_ESG하위범주밀도_{lang}", index=False)
 
-        # II-11 page_type별 ESG concept TF-IDF 특징어
+        # page_type별 ESG concept TF-IDF 특징어
         # 한국어·일본어 어휘집합이 달라 직접 통계비교가 아니라 정성적 병렬대조
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"B_page_type별_TFIDF_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II11_TFIDF특징어_{lang}", index=False)
 
-        # II-11b 계열(target_field)별 ESG concept TF-IDF 특징어
+        # 계열(target_field)별 ESG concept TF-IDF 특징어
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"D_계열별_TFIDF_{lang}.csv")
             if not t.empty:
                 t.to_excel(writer, sheet_name=f"II11b_계열별TFIDF_{lang}", index=False)
 
-        # II-11c ESG 범주(E/S/G 및 중복범주)별 concept TF-IDF 특징어
+        # ESG 범주(E/S/G 및 중복범주)별 concept TF-IDF 특징어
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계2_빈도분석" / f"F_ESG범주별_TFIDF_{lang}.csv")
             if not t.empty:
                 t.to_excel(writer, sheet_name=f"II11c_ESG범주별TFIDF_{lang}", index=False)
 
-        # II-12 계열별 핵심 연관어 네트워크 요약(개별 네트워크 그림은 PNG로 별도)
+        # 계열별 핵심 연관어 네트워크 요약(개별 네트워크 그림은 PNG로 별도)
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계3_연관분석" / f"D_계열별네트워크_요약_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II12_계열별네트워크요약_{lang}", index=False)
 
-        # II-13a 카테고리 구성비 — 검정 없이 기술통계만
+        # 카테고리 구성비 — 검정 없이 기술통계만
         comp = _read_csv(OUT / "significance" / "category_composition_descriptive.csv")
         if not comp.empty:
             comp.to_excel(writer, sheet_name="II13a_카테고리구성비_기술통계", index=False)
 
-        # II-13 통계적 검정 결과 — 문서단위 Mann-Whitney U + Fisher-Pitman,
+        # 통계적 검정 결과 — 문서단위 Mann-Whitney U + Fisher-Pitman,
         # 문서수 최소기준 통과분만, FDR(Benjamini-Hochberg) 보정값 포함
         sig = _read_csv(OUT / "significance" / "significance_tests_all.csv")
         if not sig.empty:
             sig.to_excel(writer, sheet_name="II13_통계검정결과", index=False)
 
-        # II-14 한국·일본 각각 국가 내부 통계검정(계열별/page_type별 밀도 이질성 + post-hoc)
+        # 한국·일본 각각 국가 내부 통계검정(계열별/page_type별 밀도 이질성 + post-hoc)
         sig_within = _read_csv(OUT / "significance" / "significance_within_country.csv")
         if not sig_within.empty:
             sig_within.to_excel(writer, sheet_name="II14_국가내부통계검정", index=False)
 
         NOTES.to_excel(writer, sheet_name="0_주의사항", index=False)
 
-        # II-7 ESG 키워드 한정 LDA 요약
+        # ESG 키워드 한정 LDA 요약
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계4_ESG_LDA" / f"lda_summary_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II7_ESG-LDA요약_{lang}", index=False)
 
-        # II-8 전체어휘 LDA 요약(학과 계열이 토픽으로 잡히는 한계 있음, 별도 명시)
+        # 전체어휘 LDA 요약(학과 계열이 토픽으로 잡히는 한계 있음, 별도 명시)
         for lang in ("kr", "jp"):
             t = _read_csv(OUT / lang / "단계4_전체어휘_LDA" / f"lda_full_summary_{lang}.csv")
             t.to_excel(writer, sheet_name=f"II8_전체어휘LDA요약_{lang}", index=False)
